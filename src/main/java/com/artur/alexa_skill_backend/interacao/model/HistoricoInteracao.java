@@ -1,4 +1,4 @@
-package com.artur.alexa_skill_backend.interação.model;
+package com.artur.alexa_skill_backend.interacao.model;
 
 import jakarta.persistence.*;
 import lombok.*;
