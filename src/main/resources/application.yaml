@@ -1,3 +1,20 @@
 spring:
   application:
     name: alexa-skill-backend
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/alexa_skill_db}
+    username: ${DB_USER:alexa_user}
+    password: ${DB_PASSWORD:alexa_password}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: ${PORT:8080}
