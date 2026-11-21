@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -69,5 +70,11 @@ public class ConfiguracaoVozService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Perfil de voz não encontrado");
         }
         repository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<ConfiguracaoVozResponse> buscarAtivaOpcional() {
+        return repository.findByAtivaTrue()
+                .map(ConfiguracaoVozResponse::fromEntity);
     }
 }

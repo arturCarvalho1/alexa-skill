@@ -26,6 +26,7 @@ public class SsmlBuilder {
 
         // Fallback automático para Amazon Polly
         String textoSeguro = escaparXml(texto);
+
         if (vozAtiva.isEmpty()) {
             return "<speak>" + textoSeguro + "</speak>";
         }
