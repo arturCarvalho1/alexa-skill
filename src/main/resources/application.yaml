@@ -18,3 +18,12 @@ spring:
 
 server:
   port: ${PORT:8080}
+
+app:
+  base-url: ${APP_BASE_URL:https://possibly-tactless-glare.ngrok-free.dev}
+
+elevenlabs:
+  enabled: ${ELEVENLABS_ENABLED:true}
+  api-key: ${ELEVENLABS_API_KEY:}
+  voice-id: ${ELEVENLABS_VOICE_ID:}
+  model-id: eleven_flash_v2_5
