@@ -4,7 +4,9 @@ import com.amazon.ask.dispatcher.request.handler.HandlerInput;
 import com.amazon.ask.dispatcher.request.handler.RequestHandler;
 import com.amazon.ask.model.IntentRequest;
 import com.amazon.ask.model.Response;
+import com.amazon.ask.model.Slot;
 import com.amazon.ask.request.Predicates;
+import com.artur.alexa_skill_backend.alexa.ia.CerebroJarvisService;
 import com.artur.alexa_skill_backend.alexa.ssml.SsmlBuilder;
 import com.artur.alexa_skill_backend.comando.service.RegraComandoService;
 import com.artur.alexa_skill_backend.interacao.service.HistoricoInteracaoService;
@@ -23,6 +25,7 @@ public class CustomIntentHandler implements RequestHandler {
     private final RegraComandoService comandoService;
     private final HistoricoInteracaoService historicoService;
     private final SsmlBuilder ssmlBuilder;
+    private final CerebroJarvisService cerebroJarvisService;
 
     @Override
     public boolean canHandle(HandlerInput input) {
@@ -38,13 +41,28 @@ public class CustomIntentHandler implements RequestHandler {
         String nomeVoz = vozAtiva.map(v -> v.vozPolly().getNomeSslm()).orElse("PADRAO_ALEXA");
 
         if ("AMAZON.StopIntent".equals(intentName) || "AMAZON.CancelIntent".equals(intentName)) {
-            String despedida = "Tchau vagabundo, não me procure mais";
+            String despedida = "Até logo, senhor. Estarei em modo de espera.";
             String ssml = ssmlBuilder.construir(despedida, vozAtiva);
-            historicoService.registrar(intentName, "Encerramento", despedida, nomeVoz);
-
             return input.getResponseBuilder()
                     .withSpeech(ssml)
                     .withShouldEndSession(true)
+                    .build();
+        }
+
+        if ("ConversaLivreIntent".equals(intentName)) {
+            String pergunta = Optional.ofNullable(intentRequest.getIntent().getSlots())
+                    .map(slots -> slots.get("pergunta"))
+                    .map(Slot::getValue)
+                    .orElse("");
+
+            String respostaIa = cerebroJarvisService.responder(pergunta);
+            String ssml = ssmlBuilder.construir(respostaIa, vozAtiva);
+
+            historicoService.registrar(intentName, pergunta, respostaIa, nomeVoz);
+
+            return input.getResponseBuilder()
+                    .withSpeech(ssml)
+                    .withShouldEndSession(false)
                     .build();
         }
 
