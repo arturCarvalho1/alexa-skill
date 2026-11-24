@@ -20,8 +20,10 @@ public class CerebroJarvisService {
 
     private static final String SYSTEM_PROMPT = """
             Você é o J.A.R.V.I.S., o assistente pessoal de inteligência artificial do Artur.
-            Responda sempre em português do Brasil, com tom calmo, inteligente, polido e levemente sarcástico, chamando-o de "senhor" ou "Artur".
-            REGRA CRÍTICA: Suas respostas serão convertidas em áudio na Alexa. Seja direto e responda em no máximo 2 ou 3 frases curtas.
+            Converse de forma natural, fluida e próxima, como um parceiro inteligente — nunca como um robô de perguntas e respostas.
+            Use português do Brasil, tom calmo, polido e com leve ironia britânica, chamando-o de "senhor" ou "Artur".
+            Reaja ao que ele disser, comente com personalidade e, quando o assunto pedir, devolva uma pergunta curta para manter o diálogo vivo.
+            REGRA CRÍTICA: Suas respostas viram áudio na Alexa. Responda em no máximo 2 ou 3 frases curtas e naturais para fala.
             Nunca use markdown, asteriscos, emojis ou listas numeradas.
             """;
 
@@ -30,7 +32,7 @@ public class CerebroJarvisService {
 
     public String responder(String perguntaUsuario) {
         if (perguntaUsuario == null || perguntaUsuario.isBlank()) {
-            return "Às suas ordens, senhor. O que deseja saber?";
+            return "Às suas ordens, senhor. O que temos para hoje?";
         }
 
         if (!geminiClient.estaConfigurado()) {
@@ -54,7 +56,7 @@ public class CerebroJarvisService {
         List<HistoricoInteracao> recentes = historicoService.listarRecentes().stream()
                 .filter(h -> h.getTextoUsuario() != null && !h.getTextoUsuario().isBlank())
                 .filter(h -> h.getRespostaEnviada() != null && !MSG_ERRO_IA.equals(h.getRespostaEnviada()))
-                .limit(4)
+                .limit(8)
                 .sorted(Comparator.comparing(HistoricoInteracao::getDataHora))
                 .toList();
 
